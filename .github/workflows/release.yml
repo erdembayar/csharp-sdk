@@ -42,6 +42,7 @@ jobs:
 
     permissions:
       contents: read
+      id-token: write
 
     steps:
     - name: Clone the repo
@@ -61,7 +62,6 @@ jobs:
       run: dotnet pack --configuration ${{ matrix.configuration }}
 
     - name: NuGet Login
-      # if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
       uses: NuGet/login@v1
       id: login
       with:
