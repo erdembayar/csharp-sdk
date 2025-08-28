@@ -66,16 +66,16 @@ jobs:
       id: login
       with:
         user: erdembayar
-        audience: https://int.nugettest.org
-        token-service-url: https://int.nugettest.org/api/v2/token
+        audience: https://dev.nugettest.org
+        token-service-url: https://dev.nugettest.org/api/v2/token
 
     - name: Push package
       # if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
       run: |
         dotnet nuget push ./artifacts/packages/Release/*.nupkg \
           --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
-          --source https://int.nugettest.org/api/v2/package
-
+          --source https://dev.nugettest.org/api/v2/package
+        ${{github.workspace}}/build-artifacts/packages/*.nupkg
   build-package:
     runs-on: windows-latest
     needs: build-all-configs
