@@ -34,8 +34,8 @@ jobs:
   build-all-configs:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        configuration: [Debug, Release]
+        os: [windows-latest]
+        configuration: [Release]
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -61,16 +61,16 @@ jobs:
       run: dotnet pack --configuration ${{ matrix.configuration }}
 
     - name: NuGet Login
-      if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
+      # if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
       uses: NuGet/login@v1
       id: login
       with:
-        user: your-nuget-username
+        user: erdembayar
         audience: https://int.nugettest.org
         token-service-url: https://int.nugettest.org/api/v2/token
 
     - name: Push package
-      if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
+      # if: matrix.os == 'windows-latest' && matrix.configuration == 'Release'
       run: |
         dotnet nuget push ./artifacts/packages/Release/*.nupkg \
           --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
@@ -170,9 +170,9 @@ jobs:
 
   publish-nuget:
     # Only publish to NuGet.org from the modelcontextprotocol/csharp-sdk repository
-    if: ${{ github.event_name == 'release' && github.repository == 'modelcontextprotocol/csharp-sdk' }}
+    # if: ${{ github.event_name == 'release' && github.repository == 'modelcontextprotocol/csharp-sdk' }}
     needs: build-package
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     permissions: { }
 
@@ -187,7 +187,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
 
-      - name: Publish to NuGet.org (Releases only)
+      - name: Publish to NuGet.org (Releases only)11
         run: dotnet nuget push
             ${{github.workspace}}/build-artifacts/packages/*.nupkg
             --source https://api.nuget.org/v3/index.json
